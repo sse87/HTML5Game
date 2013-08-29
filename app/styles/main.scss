@@ -1,9 +1,14 @@
 @import "compass/css3";
 @import "_animations";
 
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
 .game {
 	//border: 5px solid #FF00FF;//debug thing
-	height: 380px;
+	height: 540px;
 	left: 0;
 	position: absolute;
 	//overflow: hidden;
@@ -12,17 +17,27 @@
 }
 
 .world {
-	height: 1000px;
+	height: 540px;
 	position: absolute;
-	width: 5000px;
+	width: 960px;
 	z-index: -1;
 }
 
 .background {
-	background: url("../images/background.png");
+	background: url("../images/background.png") no-repeat scroll 0 bottom #FF0000;
+	bottom: 0;
+	height: 5000px;
 	position: absolute;
-	height: 479px;
 	width: 960px;
+}
+
+.score {
+	font-weight: bold;
+    padding: 5px;
+    position: fixed;
+    top: 0;
+    
+    div { margin-bottom: 5px; }
 }
 
 @import "_player";

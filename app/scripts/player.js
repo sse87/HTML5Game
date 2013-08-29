@@ -9,7 +9,7 @@ define(['controls'], function(Controls) {
 	var PLAYER_WIDTH = 80;
 	var PLAYER_OFFSET = 28;
 	
-	var HELL_Y = 500;
+	var HELL_Y = 550;
 	
 	var Player = function(el, game) {
 		this.game = game;
@@ -21,9 +21,12 @@ define(['controls'], function(Controls) {
 	};
 	
 	Player.prototype.reset = function() {
-		this.pos = { x: 200, y: 400 };// Positions
+		this.pos = { x: 200, y: 516 };// Positions
 		this.vel = { x: 0, y: 0 };// Velocity
 		this.til = 0;// Tile
+		
+		this.maxHeight = 0;
+		this.score = 0;
 	};
 	
 	Player.prototype.onFrame = function(delta) {
@@ -40,7 +43,9 @@ define(['controls'], function(Controls) {
 		}
 		
 		// Jumping
-		if (this.vel.y === 0) {
+		var jumpEnabled = true;
+		var autoJumpEnabled = false;
+		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
 			this.vel.y = -JUMP_VELOCITY;
 		}
 		
@@ -65,8 +70,14 @@ define(['controls'], function(Controls) {
 		this.el.toggleClass('walking', this.vel.x !== 0);
 		
 		// Update temp debug
-		// $('.tempDebug .playerPosX span').html(this.pos.x);
-		// $('.tempDebug .playerPosY span').html(this.pos.y);
+		var currentHeight = Math.abs(Math.floor(this.pos.y - 516));
+		if (currentHeight > this.maxHeight) this.maxHeight = currentHeight;
+		
+		// Update score board
+		$('.score .maxHeight span').html(this.maxHeight);
+		
+		
+		$('.score .currentHeight span').html(currentHeight + ' (' + Math.floor(this.pos.y) + ')');
 	};
 	
 	Player.prototype.checkGameOver = function() {

@@ -16,3 +16,9 @@ require(['game', 'jquery'], function (Game) {
 	var game = new Game($('.game'));
 	game.start();
 });
+
+$(document).ready(function() {
+	$('.game').click(function (e) {
+		console.log('x:' + e.clientX + ' y:' + e.clientY)
+	});
+});
