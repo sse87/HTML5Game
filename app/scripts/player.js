@@ -40,7 +40,7 @@ define(['controls'], function(Controls) {
 		}
 		
 		// Jumping
-		if (Controls.keys.space && this.vel.y === 0) {
+		if (this.vel.y === 0) {
 			this.vel.y = -JUMP_VELOCITY;
 		}
 		
