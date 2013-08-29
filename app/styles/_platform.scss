@@ -1,9 +1,8 @@
 
 .platform {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 15px;
-  background: #ba4a55;
-  @include border-radius(10px);
+	background: url("../images/wood1.png") repeat scroll 0 0 transparent;
+	height: 24px;
+	left: 0;
+	position: absolute;
+	top: 0;
 }

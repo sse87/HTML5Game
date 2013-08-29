@@ -1,159 +1,173 @@
 /*global define, $ */
 
-define(['player', 'platform'], function(Player, Platform) {
+define(['player', 'platform', 'controls'], function(Player, Platform, Controls) {
 
-  var VIEWPORT_PADDING = 100;
+	var VIEWPORT_PADDING = 100;
 
-  /**
-   * Main game class.
-   * @param {Element} el DOM element containig the game.
-   * @constructor
-   */
-  var Game = function(el) {
-    this.el = el;
-    this.player = new Player(this.el.find('.player'), this);
-    this.platformsEl = el.find('.platforms');
-    this.worldEl = el.find('.world');
-    this.isPlaying = false;
+	/**
+	 * Main game class.
+	 * @param {Element} el DOM element containig the game.
+	 * @constructor
+	 */
+	var Game = function(el) {
+		this.el = el;
+		this.player = new Player(this.el.find('.player'), this);
+		this.platformsEl = el.find('.platforms');
+		this.worldEl = el.find('.world');
+		this.isPlaying = false;
 
-    // Cache a bound onFrame since we need it each frame.
-    this.onFrame = this.onFrame.bind(this);
-  };
+		// Cache a bound onFrame since we need it each frame.
+		this.onFrame = this.onFrame.bind(this);
+	};
+	
+	Game.prototype.freezeGame = function() {
+		this.isPlaying = false;
+	};
 
-  Game.prototype.freezeGame = function() {
-    this.isPlaying = false;
-  };
+	Game.prototype.unFreezeGame = function() {
+		if (!this.isPlaying) {
+			this.isPlaying = true;
 
-  Game.prototype.unFreezeGame = function() {
-    if (!this.isPlaying) {
-      this.isPlaying = true;
+			// Restart the onFrame loop
+			this.lastFrame = +new Date() / 1000;
+			requestAnimFrame(this.onFrame);
+		}
+	};
+	
+	Game.prototype.toggleFreezeGame = function () {
+		if (this.isPlaying) {
+			this.freezeGame();
+		}
+		else {
+			this.unFreezeGame();
+		}
+	};
 
-      // Restart the onFrame loop
-      this.lastFrame = +new Date() / 1000;
-      requestAnimFrame(this.onFrame);
-    }
-  };
+	// 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1088, 1152, 1216, 1280
+	Game.prototype.createPlatforms = function() {
+		// Ground
+		this.addPlatform(new Platform({
+			x: 100,
+			y: 418,
+			width: 768,
+			height: 24
+		}));
 
+		// Floating platforms
+		this.addPlatform(new Platform({
+			x: 200,
+			y: 280,
+			width: 128  ,
+			height: 24
+		}));
+		this.addPlatform(new Platform({
+			x: 400,
+			y: 310,
+			width: 128,
+			height: 24
+		}));
+		this.addPlatform(new Platform({
+			x: 300,
+			y: 180,
+			width: 128,
+			height: 24
+		}));
+		this.addPlatform(new Platform({
+			x: 650,
+			y: 310,
+			width: 128,
+			height: 24
+		}));
+	};
 
-  Game.prototype.createPlatforms = function() {
-    // Ground
-    this.addPlatform(new Platform({
-      x: 100,
-      y: 418,
-      width: 800,
-      height: 10
-    }));
+	Game.prototype.addPlatform = function(platform) {
+		this.platforms.push(platform);
+		this.platformsEl.append(platform.el);
+	};
 
-    // Floating platforms
-    this.addPlatform(new Platform({
-      x: 300,
-      y: 258,
-      width: 100,
-      height: 10
-    }));
-    this.addPlatform(new Platform({
-      x: 500,
-      y: 288,
-      width: 100,
-      height: 10
-    }));
-    this.addPlatform(new Platform({
-      x: 400,
-      y: 158,
-      width: 100,
-      height: 10
-    }));
-    this.addPlatform(new Platform({
-      x: 750,
-      y: 188,
-      width: 100,
-      height: 10
-    }));
-  };
+	Game.prototype.gameOver = function() {
+		this.freezeGame();
+		alert('You are game over! Sorry man...');
 
-  Game.prototype.addPlatform = function(platform) {
-    this.platforms.push(platform);
-    this.platformsEl.append(platform.el);
-  };
+		var game = this;
+		setTimeout(function() {
+			game.start();
+		}, 0);
+	};
 
-  Game.prototype.gameOver = function() {
-    this.freezeGame();
-    alert('You are game over! Sorry man...');
+	/**
+	 * Runs every frame. Calculates a delta and allows each game entity to update itself.
+	 */
+	Game.prototype.onFrame = function() {
+		
+		if (Controls.keys.esc || Controls.keys.pause) {
+			this.toggleFreezeGame();
+		}
+		
+		if (!this.isPlaying) {
+			return;
+		}
 
-    var game = this;
-    setTimeout(function() {
-      game.start();
-    }, 0);
-  };
+		var now = +new Date() / 1000,
+			delta = now - this.lastFrame;
+		this.lastFrame = now;
 
-  /**
-   * Runs every frame. Calculates a delta and allows each game entity to update itself.
-   */
-  Game.prototype.onFrame = function() {
-    if (!this.isPlaying) {
-      return;
-    }
+		this.player.onFrame(delta);
 
-    var now = +new Date() / 1000,
-        delta = now - this.lastFrame;
-    this.lastFrame = now;
+		//this.updateViewport();
 
-    this.player.onFrame(delta);
+		// Request next frame.
+		requestAnimFrame(this.onFrame);
+	};
 
-    this.updateViewport();
+	Game.prototype.updateViewport = function() {
+		var minX = this.viewport.x + VIEWPORT_PADDING;
+		var maxX = this.viewport.x + this.viewport.width - VIEWPORT_PADDING;
 
-    // Request next frame.
-    requestAnimFrame(this.onFrame);
-  };
+		var playerX = this.player.pos.x;
 
-  Game.prototype.updateViewport = function() {
-    var minX = this.viewport.x + VIEWPORT_PADDING;
-    var maxX = this.viewport.x + this.viewport.width - VIEWPORT_PADDING;
+		// Update the viewport if needed.
+		if (playerX < minX) {
+			this.viewport.x = playerX - VIEWPORT_PADDING;
+		} else if (playerX > maxX) {
+			this.viewport.x = playerX - this.viewport.width + VIEWPORT_PADDING;
+		}
 
-    var playerX = this.player.pos.x;
+		this.worldEl.css({
+			left: -this.viewport.x,
+			top: -this.viewport.y
+		});
+	};
 
-    // Update the viewport if needed.
-    if (playerX < minX) {
-      this.viewport.x = playerX - VIEWPORT_PADDING;
-    } else if (playerX > maxX) {
-      this.viewport.x = playerX - this.viewport.width + VIEWPORT_PADDING;
-    }
+	/**
+	 * Starts the game.
+	 */
+	Game.prototype.start = function() {
+		this.platforms = [];
+		this.createPlatforms();
+		this.player.reset();
+		this.viewport = {x: 100, y: 150, width: 480, height: 320};
 
-    this.worldEl.css({
-      left: -this.viewport.x,
-      top: -this.viewport.y
-    });
-  };
+		this.unFreezeGame();
+	};
 
-  /**
-   * Starts the game.
-   */
-  Game.prototype.start = function() {
-    this.platforms = [];
-    this.createPlatforms();
-    this.player.reset();
-    this.viewport = {x: 100, y: 150, width: 480, height: 320};
+	Game.prototype.forEachPlatform = function(handler) {
+		this.platforms.forEach(handler);
+	};
 
-    this.unFreezeGame();
-  };
+	/**
+	 * Cross browser RequestAnimationFrame
+	 */
+	var requestAnimFrame = (function() {
+		return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+				function(/* function */ callback) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+	})();
 
-  Game.prototype.forEachPlatform = function(handler) {
-    this.platforms.forEach(handler);
-  };
-
-  /**
-   * Cross browser RequestAnimationFrame
-   */
-  var requestAnimFrame = (function() {
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function(/* function */ callback) {
-          window.setTimeout(callback, 1000 / 60);
-        };
-  })();
-
-  return Game;
+	return Game;
 });
