@@ -3,8 +3,6 @@
 define([], function() {
 
 	var KEYS = {
-		19: 'pause',
-		27: 'esc',
 		32: 'space',
 		37: 'left',
 		38: 'up',

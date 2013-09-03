@@ -5,11 +5,9 @@ define(['controls'], function(Controls) {
 	var PLAYER_SPEED = 400;
 	var JUMP_VELOCITY = 1250;
 	var GRAVITY = 4000;
-	//var PLAYER_HALF_WIDTH = 40;
+	
 	var PLAYER_WIDTH = 80;
 	var PLAYER_OFFSET = 28;
-	
-	var HELL_Y = 550;
 	
 	var Player = function(el, game) {
 		this.game = game;
@@ -27,6 +25,7 @@ define(['controls'], function(Controls) {
 		
 		this.maxHeight = 0;
 		this.score = 0;
+		this.gameoverY = 550;
 	};
 	
 	Player.prototype.onFrame = function(delta) {
@@ -43,8 +42,8 @@ define(['controls'], function(Controls) {
 		}
 		
 		// Jumping
-		var jumpEnabled = true;
-		var autoJumpEnabled = false;
+		var jumpEnabled = false;
+		var autoJumpEnabled = true;
 		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
 			this.vel.y = -JUMP_VELOCITY;
 		}
@@ -75,13 +74,13 @@ define(['controls'], function(Controls) {
 		
 		// Update score board
 		$('.score .maxHeight span').html(this.maxHeight);
-		
+		$('.score .gameoverY span').html(this.gameoverY);
 		
 		$('.score .currentHeight span').html(currentHeight + ' (' + Math.floor(this.pos.y) + ')');
 	};
 	
 	Player.prototype.checkGameOver = function() {
-		if (this.pos.y > HELL_Y) {
+		if (this.pos.y > this.gameoverY) {
 			this.game.gameOver();
 		}
 	};

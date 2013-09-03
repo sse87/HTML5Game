@@ -2,7 +2,7 @@
 
 define(['player', 'platform', 'controls'], function(Player, Platform, Controls) {
 	
-	var VIEWPORT_PADDING = 100;
+	var VIEWPORT_PADDING = 250;
 	
 	/**
 	 * Main game class.
@@ -16,9 +16,16 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.worldEl = el.find('.world');
 		this.isPlaying = false;
 		
+		this.platformSteps = 5;
+		
 		// For debug
 		$('.score').append('<div>&nbsp;</div>');
-		$('.score').append('<div class="currentHeight">Current height: <span>0</span></div>');
+		$('.score').append('<div class="currentHeight">Current height: <span></span></div>');
+		$('.score').append('<div class="maxY">maxY: <span></span></div>');
+		$('.score').append('<div class="playerMaxY">playerMaxY: <span></span></div>');
+		$('.score').append('<div class="viewportY">viewportY: <span></span></div>');
+		$('.score').append('<div class="gameoverY">gameoverY: <span></span></div>');
+		$('.score').append('<div class="totalPlatforms">Total platforms: <span></span></div>');
 		
 		// Cache a bound onFrame since we need it each frame.
 		this.onFrame = this.onFrame.bind(this);
@@ -38,31 +45,38 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		}
 	};
 	
-	Game.prototype.toggleFreezeGame = function () {
-		if (this.isPlaying) {
-			this.freezeGame();
-		}
-		else {
-			this.unFreezeGame();
-		}
-	};
-	
 	// 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1088, 1152, 1216, 1280
 	Game.prototype.createPlatforms = function() {
 		// Ground
 		this.addPlatform(new Platform({ x: 100, y: 516, width: 768, height: 24 }));
 		// Floating platforms
-		this.addPlatform(new Platform({ x: 200, y: 380 }));
-		this.addPlatform(new Platform({ x: 400, y: 410 }));
-		this.addPlatform(new Platform({ x: 300, y: 280 }));
-		this.addPlatform(new Platform({ x: 650, y: 410 }));
-		this.addPlatform(new Platform({ x: 540, y: 328 }));
-		this.addPlatform(new Platform({ x: 485, y: 230 }));
-		this.addPlatform(new Platform({ x: 355, y: 170 }));
-		this.addPlatform(new Platform({ x: 245, y: 100 }));
-		this.addPlatform(new Platform({ x: 350, y: 40 }));
-		this.addPlatform(new Platform({ x: 300, y: 5 }));
-		this.addPlatform(new Platform({ x: 440, y: -40 }));
+		// this.addPlatform(new Platform({ x: 400, y: 410 }));
+		// this.addPlatform(new Platform({ x: 650, y: 410 }));
+		// this.addPlatform(new Platform({ x: 200, y: 380 }));
+		// this.addPlatform(new Platform({ x: 540, y: 328 }));
+		// this.addPlatform(new Platform({ x: 300, y: 280 }));
+		// this.addPlatform(new Platform({ x: 485, y: 230 }));
+		// this.addPlatform(new Platform({ x: 355, y: 170 }));
+		// this.addPlatform(new Platform({ x: 245, y: 100 }));
+		// this.addPlatform(new Platform({ x: 450, y: 40 }));
+		// this.addPlatform(new Platform({ x: 300, y: 5 }));
+		// this.addPlatform(new Platform({ x: 440, y: -40 }));
+		
+		// Random floating platforms
+		var randomX = 0;
+		var semiRandomY = 0;
+		
+		var randomMin = 0;
+		for (var i = 0; i < 100; i++) {
+			randomX = this.getRandomInt(0, 860);
+			semiRandomY = (this.getRandomInt(randomMin, (randomMin + this.platformSteps) ));
+			randomMin = semiRandomY + 24;
+			this.addPlatform(new Platform({ x: randomX, y: (410 - semiRandomY) }));
+		}
+	};
+	
+	Game.prototype.getRandomInt = function(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
 	};
 	
 	Game.prototype.addPlatform = function(platform) {
@@ -77,6 +91,9 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		
 		var game = this;
 		Controls.keys = {};
+		this.worldEl.css({ top: 0 });
+		
+		// setTimeout so this frame will finish before start() is executed
 		setTimeout(function() {
 			game.start();
 		}, 0);
@@ -86,10 +103,6 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	 * Runs every frame. Calculates a delta and allows each game entity to update itself.
 	 */
 	Game.prototype.onFrame = function() {
-		
-		if (Controls.keys.esc || Controls.keys.pause) {
-			this.toggleFreezeGame();
-		}
 		
 		if (!this.isPlaying) {
 			return;
@@ -102,40 +115,44 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.player.onFrame(delta);
 		
 		//Enable when function has change for vertical update not for horizontal.
-		//this.updateViewport();
+		this.updateViewport();
 		
 		// Request next frame.
 		requestAnimFrame(this.onFrame);
 	};
 	
 	Game.prototype.updateViewport = function() {
-		var minX = this.viewport.x + VIEWPORT_PADDING;
-		var maxX = this.viewport.x + this.viewport.width - VIEWPORT_PADDING;
 		
-		var playerX = this.player.pos.x;
+		var maxY = this.viewport.y + this.viewport.height - VIEWPORT_PADDING;
+		var playerMaxY = this.player.maxHeight;
 		
 		// Update the viewport if needed.
-		if (playerX < minX) {
-			this.viewport.x = playerX - VIEWPORT_PADDING;
-		} else if (playerX > maxX) {
-			this.viewport.x = playerX - this.viewport.width + VIEWPORT_PADDING;
+		if (playerMaxY > maxY) {
+			this.viewport.y = playerMaxY - this.viewport.height + VIEWPORT_PADDING;
+			this.player.gameoverY = 600 - this.viewport.y;
+			this.worldEl.css({ top: this.viewport.y });
 		}
 		
-		this.worldEl.css({
-			left: -this.viewport.x,
-			top: -this.viewport.y
-		});
+		// Debug stats
+		$('.score .maxY span').html(maxY);
+		$('.score .playerMaxY span').html(playerMaxY);
+		$('.score .viewportY span').html(this.viewport.y);
 	};
 	
 	/**
 	 * Starts the game.
 	 */
 	Game.prototype.start = function() {
+		// Clear all existing platforms
 		this.platforms = [];
+		this.platformsEl.html('');
+		// Create new platforms
 		this.createPlatforms();
+		// Restart player attributes
 		this.player.reset();
-		this.viewport = { x: 100, y: 150, width: 480, height: 320 };
-
+		// Restart camera attributes
+		this.viewport = { x: 0, y: 0, width: 960, height: 540 };
+		
 		this.unFreezeGame();
 	};
 	
