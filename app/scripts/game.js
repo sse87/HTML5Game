@@ -3,6 +3,7 @@
 define(['player', 'platform', 'controls'], function(Player, Platform, Controls) {
 	
 	var VIEWPORT_PADDING = 250;
+	var PLATFORM_STARTING_POINT = 740;
 	
 	/**
 	 * Main game class.
@@ -16,16 +17,19 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.worldEl = el.find('.world');
 		this.isPlaying = false;
 		
-		this.platformSteps = 5;
+		// TODO: change this when player reach higher
+		this.platformSteps = 24;
 		
 		// For debug
 		$('.score').append('<div>&nbsp;</div>');
 		$('.score').append('<div class="currentHeight">Current height: <span></span></div>');
+		$('.score').append('<div class="currentX">Current X: <span></span></div>');
 		$('.score').append('<div class="maxY">maxY: <span></span></div>');
 		$('.score').append('<div class="playerMaxY">playerMaxY: <span></span></div>');
 		$('.score').append('<div class="viewportY">viewportY: <span></span></div>');
 		$('.score').append('<div class="gameoverY">gameoverY: <span></span></div>');
 		$('.score').append('<div class="totalPlatforms">Total platforms: <span></span></div>');
+		$('.score').append('<div class="lowestPlatformY">Lowest platform Y: <span></span></div>');
 		
 		// Cache a bound onFrame since we need it each frame.
 		this.onFrame = this.onFrame.bind(this);
@@ -47,31 +51,22 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	
 	// 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1088, 1152, 1216, 1280
 	Game.prototype.createPlatforms = function() {
-		// Ground
-		this.addPlatform(new Platform({ x: 100, y: 516, width: 768, height: 24 }));
-		// Floating platforms
-		// this.addPlatform(new Platform({ x: 400, y: 410 }));
-		// this.addPlatform(new Platform({ x: 650, y: 410 }));
-		// this.addPlatform(new Platform({ x: 200, y: 380 }));
-		// this.addPlatform(new Platform({ x: 540, y: 328 }));
-		// this.addPlatform(new Platform({ x: 300, y: 280 }));
-		// this.addPlatform(new Platform({ x: 485, y: 230 }));
-		// this.addPlatform(new Platform({ x: 355, y: 170 }));
-		// this.addPlatform(new Platform({ x: 245, y: 100 }));
-		// this.addPlatform(new Platform({ x: 450, y: 40 }));
-		// this.addPlatform(new Platform({ x: 300, y: 5 }));
-		// this.addPlatform(new Platform({ x: 440, y: -40 }));
+		
+		// Start platform
+		this.addPlatform(new Platform({ x: 228, y: 776, width: 64, height: 24 }));
 		
 		// Random floating platforms
+		
+		
 		var randomX = 0;
 		var semiRandomY = 0;
 		
 		var randomMin = 0;
 		for (var i = 0; i < 100; i++) {
-			randomX = this.getRandomInt(0, 860);
+			randomX = this.getRandomInt(0, 416);
 			semiRandomY = (this.getRandomInt(randomMin, (randomMin + this.platformSteps) ));
-			randomMin = semiRandomY + 24;
-			this.addPlatform(new Platform({ x: randomX, y: (410 - semiRandomY) }));
+			randomMin = semiRandomY + 28;
+			this.addPlatform(new Platform({ x: randomX, y: (PLATFORM_STARTING_POINT - semiRandomY) }));
 		}
 	};
 	
@@ -129,7 +124,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		// Update the viewport if needed.
 		if (playerMaxY > maxY) {
 			this.viewport.y = playerMaxY - this.viewport.height + VIEWPORT_PADDING;
-			this.player.gameoverY = 600 - this.viewport.y;
+			this.player.gameoverY = 800 - this.viewport.y;
 			this.worldEl.css({ top: this.viewport.y });
 		}
 		

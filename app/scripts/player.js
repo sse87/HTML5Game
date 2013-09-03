@@ -19,13 +19,13 @@ define(['controls'], function(Controls) {
 	};
 	
 	Player.prototype.reset = function() {
-		this.pos = { x: 200, y: 516 };// Positions
+		this.pos = { x: 220, y: 700 };// Positions
 		this.vel = { x: 0, y: 0 };// Velocity
 		this.til = 0;// Tile
 		
 		this.maxHeight = 0;
 		this.score = 0;
-		this.gameoverY = 550;
+		this.gameoverY = 800;
 	};
 	
 	Player.prototype.onFrame = function(delta) {
@@ -42,8 +42,8 @@ define(['controls'], function(Controls) {
 		}
 		
 		// Jumping
-		var jumpEnabled = false;
-		var autoJumpEnabled = true;
+		var jumpEnabled = true;
+		var autoJumpEnabled = false;
 		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
 			this.vel.y = -JUMP_VELOCITY;
 		}
@@ -58,7 +58,9 @@ define(['controls'], function(Controls) {
 		// Collision detection
 		this.checkPlatforms(oldY);
 		
-		this.checkGameOver();
+		this.checkWorldEndless();
+		
+		this.checkGameOver(oldY);
 		
 		// Update UI
 		this.el.css('transform', 'translate3d(' + this.pos.x + 'px,' + this.pos.y + 'px,0)');
@@ -77,12 +79,18 @@ define(['controls'], function(Controls) {
 		$('.score .gameoverY span').html(this.gameoverY);
 		
 		$('.score .currentHeight span').html(currentHeight + ' (' + Math.floor(this.pos.y) + ')');
+		$('.score .currentX span').html(Math.floor(this.pos.x));
 	};
 	
-	Player.prototype.checkGameOver = function() {
-		if (this.pos.y > this.gameoverY) {
+	Player.prototype.checkGameOver = function(oldY) {
+		if (oldY > this.gameoverY) {
 			this.game.gameOver();
 		}
+	};
+	
+	Player.prototype.checkWorldEndless = function () {
+		if (this.pos.x < -60 && this.vel.x < 0) this.pos.x = 480;
+		else if (this.pos.x > 460 && this.vel.x > 0) this.pos.x = -80;
 	};
 	
 	Player.prototype.checkPlatforms = function(oldY) {

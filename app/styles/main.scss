@@ -7,19 +7,19 @@ html, body {
 }
 
 .game {
-	//border: 5px solid #FF00FF;//debug thing
-	height: 540px;
-	left: 0;
+	height: 800px;
+	left: 50%;
+	margin-left: -240px;
 	position: absolute;
-	//overflow: hidden;
+	overflow: hidden;
 	top: 0;
-	width: 960px;
+	width: 480px;
 }
 
 .world {
-	height: 540px;
+	height: 800px;
 	position: absolute;
-	width: 960px;
+	width: 480px;
 	z-index: -1;
 }
 
@@ -28,7 +28,7 @@ html, body {
 	bottom: 0;
 	height: 5000px;
 	position: absolute;
-	width: 960px;
+	width: 480px;
 }
 
 .score {
