@@ -55,7 +55,7 @@ define(['controls'], function(Controls) {
 		
 		this.checkWorldEndless();
 		
-		//this.checkGameOver(oldY);
+		this.checkGameOver(oldY);
 		
 		// Update UI
 		this.el.css('transform', 'translate3d(' + this.pos.x + 'px,' + this.pos.y + 'px,0)');
