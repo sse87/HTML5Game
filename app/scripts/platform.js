@@ -20,6 +20,14 @@ define(function() {
 		});
 	};
 	
+	Platform.prototype.move = function(x, y) {
+		
+		this.rect.x = x;
+		this.rect.y = y;
+		this.rect.right = this.rect.x + this.rect.width;
+		this.el.css({ left: this.rect.x, top: this.rect.y });
+	};
+	
 	Platform.prototype.onFrame = function() {};
 	
 	return Platform;

@@ -17,8 +17,8 @@ require(['game', 'jquery'], function (Game) {
 	game.start();
 });
 
-$(document).ready(function() {
+/*$(document).ready(function() {
 	$('.game').click(function (e) {
 		console.log('x:' + e.clientX + ' y:' + e.clientY)
 	});
-});
+});*/

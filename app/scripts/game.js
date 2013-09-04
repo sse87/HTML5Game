@@ -2,7 +2,7 @@
 
 define(['player', 'platform', 'controls'], function(Player, Platform, Controls) {
 	
-	var VIEWPORT_PADDING = 250;
+	var VIEWPORT_PADDING = 400;
 	var PLATFORM_STARTING_POINT = 740;
 	
 	/**
@@ -16,20 +16,16 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.platformsEl = el.find('.platforms');
 		this.worldEl = el.find('.world');
 		this.isPlaying = false;
+		this.gameOverY = 800;
 		
-		// TODO: change this when player reach higher
-		this.platformSteps = 24;
+		this.platformSteps = 24;// TODO: change this when player reach higher
+		this.randomMin = 1;
 		
 		// For debug
 		$('.score').append('<div>&nbsp;</div>');
-		$('.score').append('<div class="currentHeight">Current height: <span></span></div>');
-		$('.score').append('<div class="currentX">Current X: <span></span></div>');
-		$('.score').append('<div class="maxY">maxY: <span></span></div>');
-		$('.score').append('<div class="playerMaxY">playerMaxY: <span></span></div>');
-		$('.score').append('<div class="viewportY">viewportY: <span></span></div>');
-		$('.score').append('<div class="gameoverY">gameoverY: <span></span></div>');
-		$('.score').append('<div class="totalPlatforms">Total platforms: <span></span></div>');
-		$('.score').append('<div class="lowestPlatformY">Lowest platform Y: <span></span></div>');
+		// $('.score').append('<div class="bg">Background: <span></span></div>');
+		// $('.score').append('<div class="currentX">Current X: <span></span></div>');
+		// $('.score').append('<div class="gameOverY">gameOverY: <span></span></div>');
 		
 		// Cache a bound onFrame since we need it each frame.
 		this.onFrame = this.onFrame.bind(this);
@@ -56,18 +52,20 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.addPlatform(new Platform({ x: 228, y: 776, width: 64, height: 24 }));
 		
 		// Random floating platforms
-		
-		
-		var randomX = 0;
-		var semiRandomY = 0;
-		
-		var randomMin = 0;
-		for (var i = 0; i < 100; i++) {
-			randomX = this.getRandomInt(0, 416);
-			semiRandomY = (this.getRandomInt(randomMin, (randomMin + this.platformSteps) ));
-			randomMin = semiRandomY + 28;
-			this.addPlatform(new Platform({ x: randomX, y: (PLATFORM_STARTING_POINT - semiRandomY) }));
+		for (var i = 0; i < 24; i++) {
+			this.addPlatform(new Platform( this.getNextPlatformPos() ));
 		}
+	};
+	
+	Game.prototype.getNextPlatformPos = function() {
+		
+		var semiRandomY = (this.getRandomInt(this.randomMin, (this.randomMin + this.platformSteps) ));
+		this.randomMin = semiRandomY + 28;//so they can never overleap
+		
+		var newX = this.getRandomInt(0, 416);
+		var newY = (PLATFORM_STARTING_POINT - semiRandomY);
+		
+		return { x: newX, y: newY };
 	};
 	
 	Game.prototype.getRandomInt = function(min, max) {
@@ -78,6 +76,12 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.platforms.push(platform);
 		this.platformsEl.append(platform.el);
 	};
+	
+	Game.prototype.movePlatform = function(platform)
+	{
+		var nextPos = this.getNextPlatformPos();
+		platform.move(nextPos.x, nextPos.y);
+	}
 	
 	Game.prototype.gameOver = function() {
 		this.freezeGame();
@@ -124,14 +128,12 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		// Update the viewport if needed.
 		if (playerMaxY > maxY) {
 			this.viewport.y = playerMaxY - this.viewport.height + VIEWPORT_PADDING;
-			this.player.gameoverY = 800 - this.viewport.y;
+			this.gameOverY = 800 - this.viewport.y;
 			this.worldEl.css({ top: this.viewport.y });
+			
+			var backgroundPosY = (1 + this.viewport.y / 5000) * 100;
+			$('.game').css('background-position-y', backgroundPosY + '%')
 		}
-		
-		// Debug stats
-		$('.score .maxY span').html(maxY);
-		$('.score .playerMaxY span').html(playerMaxY);
-		$('.score .viewportY span').html(this.viewport.y);
 	};
 	
 	/**
@@ -141,12 +143,15 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		// Clear all existing platforms
 		this.platforms = [];
 		this.platformsEl.html('');
+		this.randomMin = 0;
+		this.platformSteps = 24;
+		this.gameOverY = 800;
 		// Create new platforms
 		this.createPlatforms();
 		// Restart player attributes
 		this.player.reset();
 		// Restart camera attributes
-		this.viewport = { x: 0, y: 0, width: 960, height: 540 };
+		this.viewport = { x: 0, y: 0, width: 480, height: 800 };
 		
 		this.unFreezeGame();
 	};

@@ -12,20 +12,15 @@ define(['controls'], function(Controls) {
 	var Player = function(el, game) {
 		this.game = game;
 		this.el = el;
-		
-		// temp debug
-		// $('.tempDebug').append('<div class="playerPosX">Player pos X: <span></span></div>');
-		// $('.tempDebug').append('<div class="playerPosY">Player pos Y: <span></span></div>');
 	};
 	
 	Player.prototype.reset = function() {
-		this.pos = { x: 220, y: 700 };// Positions
+		this.pos = { x: 220, y: 770 };// Positions
 		this.vel = { x: 0, y: 0 };// Velocity
 		this.til = 0;// Tile
 		
 		this.maxHeight = 0;
 		this.score = 0;
-		this.gameoverY = 800;
 	};
 	
 	Player.prototype.onFrame = function(delta) {
@@ -42,8 +37,8 @@ define(['controls'], function(Controls) {
 		}
 		
 		// Jumping
-		var jumpEnabled = true;
-		var autoJumpEnabled = false;
+		var jumpEnabled = false;
+		var autoJumpEnabled = true;
 		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
 			this.vel.y = -JUMP_VELOCITY;
 		}
@@ -60,7 +55,7 @@ define(['controls'], function(Controls) {
 		
 		this.checkWorldEndless();
 		
-		this.checkGameOver(oldY);
+		//this.checkGameOver(oldY);
 		
 		// Update UI
 		this.el.css('transform', 'translate3d(' + this.pos.x + 'px,' + this.pos.y + 'px,0)');
@@ -71,43 +66,39 @@ define(['controls'], function(Controls) {
 		this.el.toggleClass('walking', this.vel.x !== 0);
 		
 		// Update temp debug
-		var currentHeight = Math.abs(Math.floor(this.pos.y - 516));
+		var currentHeight = Math.abs(Math.floor(this.pos.y - 800));
 		if (currentHeight > this.maxHeight) this.maxHeight = currentHeight;
 		
 		// Update score board
 		$('.score .maxHeight span').html(this.maxHeight);
-		$('.score .gameoverY span').html(this.gameoverY);
-		
-		$('.score .currentHeight span').html(currentHeight + ' (' + Math.floor(this.pos.y) + ')');
-		$('.score .currentX span').html(Math.floor(this.pos.x));
 	};
 	
 	Player.prototype.checkGameOver = function(oldY) {
-		if (oldY > this.gameoverY) {
+		if (oldY > this.game.gameOverY) {
 			this.game.gameOver();
 		}
 	};
 	
 	Player.prototype.checkWorldEndless = function () {
 		if (this.pos.x < -60 && this.vel.x < 0) this.pos.x = 480;
-		else if (this.pos.x > 460 && this.vel.x > 0) this.pos.x = -80;
+		else if (this.pos.x > 460 && this.vel.x > 0) this.pos.x = -60;
 	};
+	
 	
 	Player.prototype.checkPlatforms = function(oldY) {
 		var that = this;
 		var playerx1 = that.pos.x + PLAYER_OFFSET;
 		var playerx2 = that.pos.x - PLAYER_OFFSET + PLAYER_WIDTH;
 		
+		var platformCounter = 0;
+		var lowestY = 0;
+		var garbagePlatforms = 0;
 		this.game.forEachPlatform(function(p) {
-			
-			// PLAYER_WIDTH
-			// PLAYER_OFFSET
 			
 			// Are we crossing Y.
 			if (p.rect.y >= oldY && p.rect.y < that.pos.y) {
 				
 				// Are inside X bounds.
-				//if (that.pos.x + PLAYER_HALF_WIDTH >= p.rect.x && that.pos.x - PLAYER_HALF_WIDTH <= p.rect.right) {
 				if (playerx2 >= p.rect.x && playerx1 <= p.rect.right) {
 					
 					// COLLISION. Let's stop gravity.
@@ -115,6 +106,13 @@ define(['controls'], function(Controls) {
 					that.vel.y = 0;
 				}
 			}
+			
+			if (p.rect.y > lowestY) lowestY = p.rect.y;
+			if (p.rect.y > that.game.gameOverY) {
+				that.game.movePlatform(p);
+				garbagePlatforms++;
+			}
+			platformCounter++;
 		});
 	};
 	
