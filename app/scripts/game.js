@@ -111,6 +111,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		var delta = now - this.lastFrame;
 		this.lastFrame = now;
 		
+		Controls.onFrame(delta);
 		this.player.onFrame(delta);
 		
 		//Enable when function has change for vertical update not for horizontal.

@@ -26,15 +26,7 @@ define(['controls'], function(Controls) {
 	Player.prototype.onFrame = function(delta) {
 		
 		// Player input
-		if (Controls.keys.right) {
-			this.til = 0;
-			this.vel.x = PLAYER_SPEED;
-		} else if (Controls.keys.left) {
-			this.til = 1;
-			this.vel.x = -PLAYER_SPEED;
-		} else {
-			this.vel.x = 0;
-		}
+		this.vel.x = Controls.inputVec.x * PLAYER_SPEED;
 		
 		// Jumping
 		var jumpEnabled = false;
