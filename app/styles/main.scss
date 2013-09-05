@@ -9,11 +9,8 @@ html, body {
 .game {
 	background: url("../images/background.png") no-repeat scroll 0 bottom #FF0000;
 	height: 800px;
-	left: 50%;
-	margin-left: -240px;
-	position: absolute;
+	position: relative;
 	overflow: hidden;
-	top: 0;
 	width: 480px;
 }
 
@@ -25,6 +22,7 @@ html, body {
 
 .score {
 	color: #FFFFFF;
+	display: none;
 	font-weight: bold;
     padding: 5px;
     position: fixed;

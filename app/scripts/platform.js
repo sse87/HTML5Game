@@ -18,6 +18,8 @@ define(function() {
 			width: rect.width,
 			height: rect.height
 		});
+		
+		this.points = 1;
 	};
 	
 	Platform.prototype.move = function(x, y) {

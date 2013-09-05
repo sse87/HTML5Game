@@ -3,8 +3,8 @@
 define(['controls'], function(Controls) {
 	
 	var PLAYER_SPEED = 400;
-	var JUMP_VELOCITY = 1250;
-	var GRAVITY = 4000;
+	var JUMP_VELOCITY = 650;
+	var GRAVITY = 980;
 	
 	var PLAYER_WIDTH = 80;
 	var PLAYER_OFFSET = 28;
@@ -20,18 +20,22 @@ define(['controls'], function(Controls) {
 		this.til = 0;// Tile
 		
 		this.maxHeight = 0;
-		this.score = 0;
+		this.points = 0;
+		this.jumps = 0;
 	};
 	
 	Player.prototype.onFrame = function(delta) {
 		
 		// Player input
 		this.vel.x = Controls.inputVec.x * PLAYER_SPEED;
+		if (Controls.inputVec.x > 0 && this.til != 0) this.til = 0;
+		else if (Controls.inputVec.x < 0 && this.til != 1) this.til = 1;
 		
 		// Jumping
 		var jumpEnabled = false;
 		var autoJumpEnabled = true;
 		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
+			this.jumps++;
 			this.vel.y = -JUMP_VELOCITY;
 		}
 		
@@ -63,6 +67,8 @@ define(['controls'], function(Controls) {
 		
 		// Update score board
 		$('.score .maxHeight span').html(this.maxHeight);
+		$('.score .points span').html(this.points);
+		$('.score .jumps span').html(this.jumps);
 	};
 	
 	Player.prototype.checkGameOver = function(oldY) {
@@ -96,6 +102,12 @@ define(['controls'], function(Controls) {
 					// COLLISION. Let's stop gravity.
 					that.pos.y = p.rect.y;
 					that.vel.y = 0;
+					
+					// Collect platform points
+					if (p.points > 0) {
+						that.points += p.points;
+						p.points = 0;
+					}
 				}
 			}
 			

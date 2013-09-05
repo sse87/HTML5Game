@@ -49,11 +49,11 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	Game.prototype.createPlatforms = function() {
 		
 		// Start platform
-		this.addPlatform(new Platform({ x: 228, y: 776, width: 64, height: 24 }));
+		this.addPlatform(new Platform({ x: 228, y: 776, width: 64, height: 24 }, 2));
 		
 		// Random floating platforms
 		for (var i = 0; i < 24; i++) {
-			this.addPlatform(new Platform( this.getNextPlatformPos() ));
+			this.addPlatform(new Platform( this.getNextPlatformPos(), 1 ));
 		}
 	};
 	
@@ -154,6 +154,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		// Restart camera attributes
 		this.viewport = { x: 0, y: 0, width: 480, height: 800 };
 		
+		$('.score').fadeIn('slow');
 		this.unFreezeGame();
 	};
 	
