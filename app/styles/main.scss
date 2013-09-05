@@ -14,6 +14,73 @@ html, body {
 	width: 480px;
 }
 
+.startMenu {
+	position: absolute;
+	top: 100px;
+	
+	div {
+		color: #FFFFFF;
+		cursor: pointer;
+		font-size: 36px;
+		font-weight: bold;
+		margin-bottom: 25px;
+		text-align: center;
+		width: 480px;
+	}
+	.title {
+		color: #000000;
+		font-size: 42px;
+		margin-bottom: 50px;
+	}
+	.newGame {}
+	.scores {
+		div {
+			display: none;
+			font-size: 24px;
+			font-style: italic;
+			font-weight: normal;
+		}
+	}
+}
+
+.gameOverMenu {
+	display: none;
+	position: absolute;
+	top: 100px;
+	
+	div {
+		color: #FFFFFF;
+		font-size: 36px;
+		font-weight: bold;
+		margin-bottom: 25px;
+		text-align: center;
+		width: 480px;
+	}
+	.title {
+		color: #000000;
+		font-size: 42px;
+	}
+	.scores {
+		font-size: 24px;
+		font-weight: normal;
+		table { margin: 0 auto; }
+	}
+	.button {
+		cursor: pointer;
+	}
+	.submitScore {
+		div {
+			display: none;
+			font-size: 24px;
+			font-style: italic;
+			font-weight: normal;
+		}
+	}
+	.playAgain {}
+	.exitToMenu {}
+	
+}
+
 .world {
 	height: 800px;
 	position: absolute;

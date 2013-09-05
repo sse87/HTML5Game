@@ -11,14 +11,51 @@ require.config({
 	}
 });
 
+var game;
 require(['game', 'jquery'], function (Game) {
 	'use strict';
-	var game = new Game($('.game'));
-	game.start();
+	game = new Game($('.game'));
 });
 
-/*$(document).ready(function() {
-	$('.game').click(function (e) {
-		console.log('x:' + e.clientX + ' y:' + e.clientY)
+$(document).ready(function() {
+	
+	$('.startMenu .newGame').click(function () {
+		$('.startMenu').fadeOut('slow', function () {
+			
+			game.start();
+			
+		});
 	});
-});*/
+	
+	$('.startMenu .scores').click(function () {
+		// Temp message
+		$('.startMenu .scores > div').slideDown('slow', function () {
+			
+			$('.startMenu .scores > div > div').delay(1500).slideDown('slow');
+			
+		});
+	});
+	
+	$('.gameOverMenu .submitScore').click(function () {
+		// Temp message
+		$('.gameOverMenu .submitScore > div').slideDown('slow', function () {
+			
+			$('.gameOverMenu .submitScore > div > div').delay(1500).slideDown('slow');
+			
+		});
+	});
+	$('.gameOverMenu .playAgain').click(function () {
+		$('.gameOverMenu').fadeOut('slow', function () {
+			
+			game.start();
+			
+		});
+	});
+	$('.gameOverMenu .exitToMenu').click(function () {
+		$('.gameOverMenu').fadeOut('slow', function () {
+			
+			$('.startMenu').fadeIn('slow');
+			
+		});
+	});
+});

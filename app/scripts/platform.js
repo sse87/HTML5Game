@@ -2,7 +2,7 @@
 
 define(function() {
 	
-	var Platform = function(rect) {
+	var Platform = function(rect, type) {
 		
 		// Default width and height
 		if (typeof(rect.width) === 'undefined') rect.width = 64;
@@ -20,9 +20,12 @@ define(function() {
 		});
 		
 		this.points = 1;
+		this.type = type;
 	};
 	
 	Platform.prototype.move = function(x, y) {
+		
+		this.points = 1;
 		
 		this.rect.x = x;
 		this.rect.y = y;

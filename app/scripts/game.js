@@ -22,7 +22,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.randomMin = 1;
 		
 		// For debug
-		$('.score').append('<div>&nbsp;</div>');
+		// $('.score').append('<div>&nbsp;</div>');
 		// $('.score').append('<div class="bg">Background: <span></span></div>');
 		// $('.score').append('<div class="currentX">Current X: <span></span></div>');
 		// $('.score').append('<div class="gameOverY">gameOverY: <span></span></div>');
@@ -86,16 +86,17 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	Game.prototype.gameOver = function() {
 		this.freezeGame();
 		
-		alert('You are game over! Sorry man...');
+		$('.gameOverMenu .scores .maxHeight').html(this.player.maxHeight);
+		$('.gameOverMenu .scores .points').html(this.player.points);
+		$('.gameOverMenu .scores .jumps').html(this.player.jumps);
+		
+		$('.game').css('background-position-y', '100%')
+		$('.score').fadeOut('slow');
+		$('.gameOverMenu').fadeIn('slow');
 		
 		var game = this;
 		Controls.keys = {};
 		this.worldEl.css({ top: 0 });
-		
-		// setTimeout so this frame will finish before start() is executed
-		setTimeout(function() {
-			game.start();
-		}, 0);
 	};
 	
 	/**
