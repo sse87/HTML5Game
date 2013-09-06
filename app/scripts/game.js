@@ -19,7 +19,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.gameOverY = 800;
 		
 		this.platformSteps = 24;// TODO: change this when player reach higher
-		this.randomMin = 1;
+		this.randomMin = 0;
 		
 		// For debug
 		// $('.score').append('<div>&nbsp;</div>');
@@ -90,7 +90,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		$('.gameOverMenu .scores .points').html(this.player.points);
 		$('.gameOverMenu .scores .jumps').html(this.player.jumps);
 		
-		$('.game').css('background-position-y', '100%')
+		$('.game').animate({ 'background-position-y': '100%' }, 2000);
 		$('.score').fadeOut('slow');
 		$('.gameOverMenu').fadeIn('slow');
 		
@@ -133,7 +133,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 			this.gameOverY = 800 - this.viewport.y;
 			this.worldEl.css({ top: this.viewport.y });
 			
-			var backgroundPosY = (1 + this.viewport.y / 5000) * 100;
+			var backgroundPosY = (1 + this.viewport.y / 50000) * 100;
 			$('.game').css('background-position-y', backgroundPosY + '%')
 		}
 	};

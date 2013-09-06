@@ -1,8 +1,12 @@
 
 .platform {
-	background: url("../images/wood1.png") repeat scroll 0 0 transparent;
+	background: url("../images/platforms.png") repeat scroll 0 0 transparent;
 	height: 24px;
 	left: 0;
 	position: absolute;
 	top: 0;
+	
+	&.t1 { background-position: 0 -24px; }
+	&.t2 { background-position: 0 -48px; }
+	&.t3 { background-position: 0 -72px; }
 }

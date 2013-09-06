@@ -15,8 +15,8 @@ define(['controls'], function(Controls) {
 	};
 	
 	Player.prototype.reset = function() {
-		this.pos = { x: 220, y: 770 };// Positions
-		this.vel = { x: 0, y: 0 };// Velocity
+		this.pos = { x: 220, y: 750 };// Positions
+		this.vel = { x: 0, y: 1 };// Velocity
 		this.til = 0;// Tile
 		
 		this.maxHeight = 0;
@@ -35,8 +35,8 @@ define(['controls'], function(Controls) {
 		var jumpEnabled = false;
 		var autoJumpEnabled = true;
 		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
-			this.jumps++;
 			this.vel.y = -JUMP_VELOCITY;
+			this.jumps++;
 		}
 		
 		// Gravity
@@ -102,10 +102,13 @@ define(['controls'], function(Controls) {
 					// COLLISION. Let's stop gravity.
 					that.pos.y = p.rect.y;
 					that.vel.y = 0;
+					if (p.type == 3)
+						that.vel.y = (-1 * JUMP_VELOCITY * 1.5);
 					
 					// Collect platform points
 					if (p.points > 0) {
 						that.points += p.points;
+						p.removeClass();
 						p.points = 0;
 					}
 				}
