@@ -12,7 +12,6 @@
 	<link rel="stylesheet" href="styles/main.css">
 	<!-- endbuild -->
 	<!-- build:js scripts/vendor/modernizr.js -->
-	<script src="bower_components/modernizr/modernizr.js"></script>
 	<script src="bower_components/jquery/jquery.min.js"></script>
 	<!-- endbuild -->
 </head>
@@ -32,10 +31,12 @@
 				<div class="jumps">Jumps: <span>0</span></div>
 			</div>
 			
+			<div class="version"></div>
+			
 			<div class="startMenu">
 				<div class="title">Jumpy jumper</div>
 				<div class="newGame">New game</div>
-				<div class="scores">View scores<div>Soon to be implemented<div>Sorry!</div></div></div>
+				<div class="scores"><a href="http://sse87.1984.is/app/scores/" target="_blank">View scores</a></div>
 			</div>
 			
 			<div class="gameOverMenu">
@@ -47,7 +48,9 @@
 						<tr><td>Jumps:</td><td class="finalScore jumps">0</td></tr>
 					</table>
 				</div>
-				<div class="button submitScore">Submit score<div>Soon to be implemented<div>Sorry!</div></div></div>
+				<div class="button submitScore">Submit score</div>
+				<div class="input newName"><input type="text" value="anonymous"></div>
+				<div class="button submit">Submit score</div>
 				<div class="button playAgain">Play again</div>
 				<div class="button exitToMenu">Exit to menu</div>
 			</div>

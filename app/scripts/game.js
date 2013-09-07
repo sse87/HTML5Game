@@ -11,6 +11,8 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	 * @constructor
 	 */
 	var Game = function(el) {
+		this.version = '0.8.1';
+		
 		this.el = el;
 		this.player = new Player(this.el.find('.player'), this);
 		this.platformsEl = el.find('.platforms');
@@ -21,11 +23,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.platformSteps = 24;// TODO: change this when player reach higher
 		this.randomMin = 0;
 		
-		// For debug
-		// $('.score').append('<div>&nbsp;</div>');
-		// $('.score').append('<div class="bg">Background: <span></span></div>');
-		// $('.score').append('<div class="currentX">Current X: <span></span></div>');
-		// $('.score').append('<div class="gameOverY">gameOverY: <span></span></div>');
+		$('.version').html('v. ' + this.version);
 		
 		// Cache a bound onFrame since we need it each frame.
 		this.onFrame = this.onFrame.bind(this);
