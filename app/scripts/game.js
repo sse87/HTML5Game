@@ -11,7 +11,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	 * @constructor
 	 */
 	var Game = function(el) {
-		this.version = '0.8.1';
+		this.version = '0.9.0';
 		
 		this.el = el;
 		this.player = new Player(this.el.find('.player'), this);
@@ -20,7 +20,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.isPlaying = false;
 		this.gameOverY = 800;
 		
-		this.platformSteps = 24;// TODO: change this when player reach higher
+		this.platformSteps = 24;
 		this.randomMin = 0;
 		
 		$('.version').html('v. ' + this.version);
@@ -58,10 +58,21 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	Game.prototype.getNextPlatformPos = function() {
 		
 		var semiRandomY = (this.getRandomInt(this.randomMin, (this.randomMin + this.platformSteps) ));
-		this.randomMin = semiRandomY + 28;//so they can never overleap
+		this.randomMin = semiRandomY + 50;//so they can never overleap
 		
 		var newX = this.getRandomInt(0, 416);
 		var newY = (PLATFORM_STARTING_POINT - semiRandomY);
+		
+		if (this.platformSteps != 150)
+		{
+			if (newY < -10000) {
+				this.platformSteps = 150;
+			} else if (newY < -5000 && this.platformSteps < 75) {
+				this.platformSteps = 75;
+			} else if (newY < -1000 && this.platformSteps < 50) {
+				this.platformSteps = 50;
+			}
+		}
 		
 		return { x: newX, y: newY };
 	};

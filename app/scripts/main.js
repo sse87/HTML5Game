@@ -87,6 +87,9 @@ $(document).ready(function() {
 		$('.gameOverMenu').fadeOut('slow', function () { $('.startMenu').fadeIn('slow'); });
 	});
 	
+	// debug
+	//$('.startMenu .newGame').click();
+	
 });
 
 function clearCookie(_cookie_name)

@@ -10,7 +10,7 @@ define([], function() {
 		40: 'down'
 	};
 	
-	var FULL_ANGLE = 20;
+	var FULL_ANGLE = 30;
 	
 	/**
 	 * Controls singleton class.

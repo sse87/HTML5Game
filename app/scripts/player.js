@@ -78,8 +78,8 @@ define(['controls'], function(Controls) {
 	};
 	
 	Player.prototype.checkWorldEndless = function () {
-		if (this.pos.x < -60 && this.vel.x < 0) this.pos.x = 480;
-		else if (this.pos.x > 460 && this.vel.x > 0) this.pos.x = -60;
+		if (this.pos.x < -40 && this.vel.x < 0) this.pos.x = 460;
+		else if (this.pos.x > 440 && this.vel.x > 0) this.pos.x = -40;
 	};
 	
 	
@@ -107,9 +107,7 @@ define(['controls'], function(Controls) {
 					
 					// Collect platform points
 					if (p.points > 0) {
-						that.points += p.points;
-						p.removeClass();
-						p.points = 0;
+						that.points += p.getPoints();
 					}
 				}
 			}

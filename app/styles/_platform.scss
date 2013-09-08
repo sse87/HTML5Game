@@ -9,4 +9,16 @@
 	&.t1 { background-position: 0 -24px; }
 	&.t2 { background-position: 0 -48px; }
 	&.t3 { background-position: 0 -72px; }
+	
+	.addPoints {
+		color: #FFFFFF;
+		font-size: 24px;
+		font-weight: bold;
+		left: 50%;
+		position: absolute;
+		margin-left: -10px;
+		text-align: center;
+		top: -10px;
+		width: 20px;
+	}
 }

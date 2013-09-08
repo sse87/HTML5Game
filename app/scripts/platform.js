@@ -53,12 +53,28 @@ define(function() {
 		
 	};
 	
+	Platform.prototype.getPoints = function() {
+		
+		var retPoints = this.points;
+		
+		this.el.append('<div class="addPoints">' + this.points + '</div>');
+		this.el.find('.addPoints').animate({ top: -30 }, 500, function () {
+			$(this).remove();
+		});
+		
+		this.removeClass();
+		this.points = 0;
+		
+		
+		return retPoints;
+	};
+	
 	Platform.prototype.setType = function(type) {
 		
 		this.type = type;
 		
 		if (this.type == 1) this.points = 1;
-		else if (this.type == 2) this.points = 5;
+		else if (this.type == 2) this.points = 3;
 		else if (this.type == 3) this.points = 15;
 		
 		this.removeClass();
