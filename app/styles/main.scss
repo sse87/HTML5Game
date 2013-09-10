@@ -27,6 +27,12 @@ html, body {
 		text-align: center;
 		width: 480px;
 	}
+	.version {
+		color: #FFFFFF;
+		position: absolute;
+		top: -100px;
+		right: 5px;
+	}
 	.title {
 		color: #000000;
 		font-size: 42px;
@@ -59,9 +65,12 @@ html, body {
 		font-size: 24px;
 		font-weight: normal;
 		table { margin: 0 auto; }
-		.finalScore { text-align: right; }
+		.txtleft { text-align: left; }
+		.txtcenter { text-align: center; }
+		.txtright { text-align: right; }
 	}
 	.button { cursor: pointer; }
+	.submitScore { display: none; }
 	.newName {
 		display: none;
 		margin-bottom: 0;
@@ -98,11 +107,24 @@ html, body {
     
     div { margin-bottom: 5px; }
 }
-.version {
-	color: #FFFFFF;
+.fires {
+	display: none;
+	height: 256px;
 	position: absolute;
-	top: 0px;
-	right: 5px;
+	width: 100%;
+	
+	.fire {
+		background: url("../images/fire.gif") repeat scroll 0 0 / 64px auto transparent;
+		height: 64px;
+		width: 100%;
+		&.nr2 {
+			background-position: 32px 0;
+    		margin-top: -32px;
+		}
+		&.nr3 {
+			margin-top: -32px;
+		}
+	}
 }
 
 @import "_player";

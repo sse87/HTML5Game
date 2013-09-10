@@ -14,7 +14,7 @@ define(['controls'], function(Controls) {
 		this.el = el;
 	};
 	
-	Player.prototype.reset = function() {
+	Player.prototype.reset = function () {
 		this.pos = { x: 220, y: 750 };// Positions
 		this.vel = { x: 0, y: 1 };// Velocity
 		this.til = 0;// Tile
@@ -32,11 +32,14 @@ define(['controls'], function(Controls) {
 		else if (Controls.inputVec.x < 0 && this.til != 1) this.til = 1;
 		
 		// Jumping
-		var jumpEnabled = false;
-		var autoJumpEnabled = true;
-		if (((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && this.vel.y === 0) {
+		// var jumpEnabled = false;
+		// var autoJumpEnabled = true;
+		// ((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && 
+		
+		if (this.vel.y === 0) {
 			this.vel.y = -JUMP_VELOCITY;
 			this.jumps++;
+			$('.score .jumps span').html(this.jumps);
 		}
 		
 		// Gravity
@@ -65,15 +68,15 @@ define(['controls'], function(Controls) {
 		var currentHeight = Math.abs(Math.floor(this.pos.y - 800));
 		if (currentHeight > this.maxHeight) this.maxHeight = currentHeight;
 		
-		// Update score board
-		$('.score .maxHeight span').html(this.maxHeight);
-		$('.score .points span').html(this.points);
-		$('.score .jumps span').html(this.jumps);
+		if (this.maxHeight < 500)
+			$('.score .maxHeight span').html(this.maxHeight);
 	};
 	
 	Player.prototype.checkGameOver = function(oldY) {
 		if (oldY > this.game.gameOverY) {
-			this.game.gameOver();
+			this.game.gameOver('crashed to death');
+		} else if (oldY > this.game.fireY + 100) {
+			this.game.gameOver('burned alive');
 		}
 	};
 	
@@ -105,9 +108,12 @@ define(['controls'], function(Controls) {
 					if (p.type == 3)
 						that.vel.y = (-1 * JUMP_VELOCITY * 1.5);
 					
+					
+					
 					// Collect platform points
 					if (p.points > 0) {
 						that.points += p.getPoints();
+						$('.score .points span').html(that.points);
 					}
 				}
 			}

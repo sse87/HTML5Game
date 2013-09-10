@@ -1,6 +1,6 @@
 /*global define, $ */
 
-define([], function() {
+define([], function () {
 	
 	var KEYS = {
 		32: 'space',
@@ -16,7 +16,7 @@ define([], function() {
 	 * Controls singleton class.
 	 * @constructor
 	 */
-	var Controls = function() {
+	var Controls = function () {
 		this.keys = {};
 		this.inputVec = { x: 0, y: 0 };
 		this.tilt = 0;
@@ -63,7 +63,7 @@ define([], function() {
 		}
 	};
 	
-	Controls.prototype.onFrame = function() {
+	Controls.prototype.onFrame = function () {
 		if (this.keys.right) {
 			this.inputVec.x = 1;
 		} else if (this.keys.left) {

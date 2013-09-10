@@ -11,7 +11,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	 * @constructor
 	 */
 	var Game = function(el) {
-		this.version = '0.9.0';
+		this.version = '0.10.0';
 		
 		this.el = el;
 		this.player = new Player(this.el.find('.player'), this);
@@ -21,7 +21,12 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.gameOverY = 800;
 		
 		this.platformSteps = 24;
+		this.specialPlatformInterval = 25;
 		this.randomMin = 0;
+		
+		this.fireSpeed = 1;
+		this.fireY = 1000;
+		this.fireEl = this.worldEl.find('.fires');
 		
 		$('.version').html('v. ' + this.version);
 		
@@ -29,11 +34,11 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.onFrame = this.onFrame.bind(this);
 	};
 	
-	Game.prototype.freezeGame = function() {
+	Game.prototype.freezeGame = function () {
 		this.isPlaying = false;
 	};
 	
-	Game.prototype.unFreezeGame = function() {
+	Game.prototype.unFreezeGame = function () {
 		if (!this.isPlaying) {
 			this.isPlaying = true;
 			
@@ -44,10 +49,10 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	};
 	
 	// 64, 128, 192, 256, 320, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1088, 1152, 1216, 1280
-	Game.prototype.createPlatforms = function() {
+	Game.prototype.createPlatforms = function () {
 		
 		// Start platform
-		this.addPlatform(new Platform({ x: 228, y: 776, width: 64, height: 24 }, 2));
+		this.addPlatform(new Platform({ x: 228, y: 776, width: 96, height: 24 }, 2));
 		
 		// Random floating platforms
 		for (var i = 0; i < 24; i++) {
@@ -55,24 +60,13 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		}
 	};
 	
-	Game.prototype.getNextPlatformPos = function() {
+	Game.prototype.getNextPlatformPos = function () {
 		
 		var semiRandomY = (this.getRandomInt(this.randomMin, (this.randomMin + this.platformSteps) ));
 		this.randomMin = semiRandomY + 50;//so they can never overleap
 		
-		var newX = this.getRandomInt(0, 416);
+		var newX = this.getRandomInt(0, 384);
 		var newY = (PLATFORM_STARTING_POINT - semiRandomY);
-		
-		if (this.platformSteps != 150)
-		{
-			if (newY < -10000) {
-				this.platformSteps = 150;
-			} else if (newY < -5000 && this.platformSteps < 75) {
-				this.platformSteps = 75;
-			} else if (newY < -1000 && this.platformSteps < 50) {
-				this.platformSteps = 50;
-			}
-		}
 		
 		return { x: newX, y: newY };
 	};
@@ -86,32 +80,115 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.platformsEl.append(platform.el);
 	};
 	
+	var moveCounter = 0;
 	Game.prototype.movePlatform = function(platform)
 	{
+		moveCounter++;
+		
 		var nextPos = this.getNextPlatformPos();
-		platform.move(nextPos.x, nextPos.y);
-	}
+		
+		if (moveCounter >= this.specialPlatformInterval)
+		{
+			moveCounter = 0;
+			platform.move(nextPos.x, nextPos.y, 3);
+		}
+		else
+		{
+			platform.move(nextPos.x, nextPos.y, 0);
+		}
+	};
 	
-	Game.prototype.gameOver = function() {
+	Game.prototype.createFire = function (fireY) {
+		
+		$('.fires').css('display', 'block');
+		this.fireY = fireY;
+	};
+	
+	Game.prototype.updateFire = function () {
+		
+		if ((this.gameOverY + 500) < this.fireY)
+			this.fireY = this.gameOverY;
+		
+		this.fireY -= this.fireSpeed;
+		this.fireEl.css('transform', 'translate3d(0,' + this.fireY + 'px,0)');
+	};
+	
+	Game.prototype.gameOver = function (killMsg) {
 		this.freezeGame();
 		
+		$('.gameOverMenu .scores .deathBy').html('You ' + killMsg);
 		$('.gameOverMenu .scores .maxHeight').html(this.player.maxHeight);
 		$('.gameOverMenu .scores .points').html(this.player.points);
 		$('.gameOverMenu .scores .jumps').html(this.player.jumps);
 		
 		$('.game').animate({ 'background-position-y': '100%' }, 2000);
 		$('.score').fadeOut('slow');
-		$('.gameOverMenu').fadeIn('slow');
+		$('.gameOverMenu').fadeIn('slow', function () {
+			$('.gameOverMenu .submitScore').slideDown('slow');
+		});
 		
 		var game = this;
 		Controls.keys = {};
 		this.worldEl.css({ top: 0 });
 	};
 	
+	Game.prototype.checkForTriggers = function () {
+		
+		var playerY = this.player.pos.y;
+		var playerMaxY = this.player.maxHeight;
+		
+		// Fire starts
+		if (this.fireY == 1000 && playerMaxY > 5000) {
+			this.createFire( (playerY + 400) );
+		}
+		
+		// Fire speed
+		if (this.fireSpeed < 15)
+		{
+			if (playerMaxY > 40000 && this.fireSpeed < 10) {
+				this.fireSpeed = 10;
+			} else if (playerMaxY > 35000 && this.fireSpeed < 9) {
+				this.fireSpeed = 9;
+			} else if (playerMaxY > 30000 && this.fireSpeed < 8) {
+				this.fireSpeed = 8;
+			} else if (playerMaxY > 25000 && this.fireSpeed < 7) {
+				this.fireSpeed = 7;
+			} else if (playerMaxY > 20000 && this.fireSpeed < 6) {
+				this.fireSpeed = 6;
+				this.specialPlatformInterval = 5;
+			} else if (playerMaxY > 15000 && this.fireSpeed < 5) {
+				this.fireSpeed = 5;
+				this.specialPlatformInterval = 10;
+			} else if (playerMaxY > 12500 && this.fireSpeed < 4) {
+				this.fireSpeed = 4;
+			} else if (playerMaxY > 10000 && this.fireSpeed < 3) {
+				this.fireSpeed = 3;
+				this.specialPlatformInterval = 15;
+			} else if (playerMaxY > 7500 && this.fireSpeed < 2) {
+				this.fireSpeed = 2;
+				this.specialPlatformInterval = 20;
+			}
+		}
+		
+		// Platform steps
+		if (this.platformSteps < 150)
+		{
+			if (playerMaxY > 10000 && this.platformSteps < 150) {
+				this.platformSteps = 150;
+			} else if (playerMaxY > 5000 && this.platformSteps < 75) {
+				this.platformSteps = 75;
+			} else if (playerMaxY > 2500 && this.platformSteps < 50) {
+				this.platformSteps = 50;
+			}
+		}
+		
+	};
+	
 	/**
 	 * Runs every frame. Calculates a delta and allows each game entity to update itself.
 	 */
-	Game.prototype.onFrame = function() {
+	var updateFireNext = true;
+	Game.prototype.onFrame = function () {
 		
 		if (!this.isPlaying) {
 			return;
@@ -124,6 +201,13 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		Controls.onFrame(delta);
 		this.player.onFrame(delta);
 		
+		this.checkForTriggers();
+		
+		if (this.fireY != 1000 && updateFireNext) {
+			this.updateFire();
+		}
+		updateFireNext = !updateFireNext;
+		
 		//Enable when function has change for vertical update not for horizontal.
 		this.updateViewport();
 		
@@ -131,7 +215,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		requestAnimFrame(this.onFrame);
 	};
 	
-	Game.prototype.updateViewport = function() {
+	Game.prototype.updateViewport = function () {
 		
 		var maxY = this.viewport.y + this.viewport.height - VIEWPORT_PADDING;
 		var playerMaxY = this.player.maxHeight;
@@ -142,21 +226,26 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 			this.gameOverY = 800 - this.viewport.y;
 			this.worldEl.css({ top: this.viewport.y });
 			
-			var backgroundPosY = (1 + this.viewport.y / 50000) * 100;
-			$('.game').css('background-position-y', backgroundPosY + '%')
+			$('.score .maxHeight span').html(this.player.maxHeight);
+			
+			var backgroundPosY = (1 + this.viewport.y / 25000) * 100;
+			$('.game').css('background-position-y', backgroundPosY + '%');
 		}
 	};
 	
 	/**
 	 * Starts the game.
 	 */
-	Game.prototype.start = function() {
+	Game.prototype.start = function () {
 		// Clear all existing platforms
 		this.platforms = [];
 		this.platformsEl.html('');
 		this.randomMin = 0;
 		this.platformSteps = 24;
+		this.specialPlatformInterval = 25;
 		this.gameOverY = 800;
+		this.fireY = 1000;
+		$('.fires').css('display', 'none');
 		// Create new platforms
 		this.createPlatforms();
 		// Restart player attributes
@@ -175,7 +264,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	/**
 	 * Cross browser RequestAnimationFrame
 	 */
-	var requestAnimFrame = (function() {
+	var requestAnimFrame = (function () {
 		return window.requestAnimationFrame ||
 				window.webkitRequestAnimationFrame ||
 				window.mozRequestAnimationFrame ||

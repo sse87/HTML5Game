@@ -17,19 +17,10 @@ require(['game', 'jquery'], function (Game) {
 	game = new Game($('.game'));
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
 	
 	$('.startMenu .newGame').click(function () {
 		$('.startMenu').fadeOut('slow', function () { game.start(); });
-	});
-	
-	$('.startMenu .scores').click(function () {
-		// Temp message
-		$('.startMenu .scores > div').slideDown('slow', function () {
-			
-			$('.startMenu .scores > div > div').delay(1500).slideDown('slow');
-			
-		});
 	});
 	
 	$('.gameOverMenu .submitScore').click(function () {
@@ -46,8 +37,7 @@ $(document).ready(function() {
 		
 	});
 	
-	// could be a problem...
-	$('.gameOverMenu .newName input').click(function() {
+	$('.gameOverMenu .newName input').click(function () {
 		$('.gameOverMenu .newName input').select();
 	});
 	
@@ -57,6 +47,7 @@ $(document).ready(function() {
 		var height = $('.gameOverMenu .scores .maxHeight').html();
 		var points = $('.gameOverMenu .scores .points').html();
 		var jumps = $('.gameOverMenu .scores .jumps').html();
+		var killmsg = $('.gameOverMenu .scores .deathBy').html().replace('You ','');
 		var version = $('.version').html().replace('v. ','');
 		var hash = 'someHash';
 		
@@ -69,7 +60,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'POST',
 			url: 'http://sse87.1984.is/app/scores/submitScore.php',
-			data: 'name='+name+'&height='+height+'&points='+points+'&jumps='+jumps+'&version='+version+'&hash='+hash+'',
+			data: 'name='+name+'&height='+height+'&points='+points+'&jumps='+jumps+'&killmsg='+killmsg+'&version='+version+'&hash='+hash+'',
 		}).done(function (response) {
 			if (response == '0') { console.log('score submited!'); }
 			else { console.log('ajax error: ' + response); }
@@ -86,9 +77,6 @@ $(document).ready(function() {
 	$('.gameOverMenu .exitToMenu').click(function () {
 		$('.gameOverMenu').fadeOut('slow', function () { $('.startMenu').fadeIn('slow'); });
 	});
-	
-	// debug
-	//$('.startMenu .newGame').click();
 	
 });
 

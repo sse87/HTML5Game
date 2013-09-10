@@ -23,6 +23,12 @@
 			<div class="world">
 				<div class="platforms"></div>
 				<div class="player"></div>
+				<div class="fires">
+					<div class="fire nr1"></div>
+					<div class="fire nr2"></div>
+					<div class="fire nr3"></div>
+					<div class="fire nr2"></div>
+				</div>
 			</div>
 			
 			<div class="score">
@@ -31,9 +37,9 @@
 				<div class="jumps">Jumps: <span>0</span></div>
 			</div>
 			
-			<div class="version"></div>
 			
 			<div class="startMenu">
+				<span class="version"></span>
 				<div class="title">Jumpy jumper</div>
 				<div class="newGame">New game</div>
 				<div class="scores"><a href="http://sse87.1984.is/app/scores/" target="_blank">View scores</a></div>
@@ -42,10 +48,11 @@
 			<div class="gameOverMenu">
 				<div class="title">Game Over!</div>
 				<div class="scores">
-					<table>
-						<tr><td>Height:</td><td class="finalScore maxHeight">0</td></tr>
-						<tr><td>Points:</td><td class="finalScore points">0</td></tr>
-						<tr><td>Jumps:</td><td class="finalScore jumps">0</td></tr>
+					<table border="0">
+						<tr><td colspan="2" class="txtcenter deathBy"></td></tr>
+						<tr><td class="txtleft">Height:</td><td class="txtright maxHeight">0</td></tr>
+						<tr><td class="txtleft">Points:</td><td class="txtright points">0</td></tr>
+						<tr><td class="txtleft">Jumps:</td><td class="txtright jumps">0</td></tr>
 					</table>
 				</div>
 				<div class="button submitScore">Submit score</div>

@@ -1,11 +1,11 @@
 /*global define */
 
-define(function() {
+define(function () {
 	
 	var Platform = function(rect, type) {
 		
 		// Default width and height
-		if (typeof(rect.width) === 'undefined') rect.width = 64;
+		if (typeof(rect.width) === 'undefined') rect.width = 96;
 		if (typeof(rect.height) === 'undefined') rect.height = 24;
 		
 		this.rect = rect;
@@ -23,37 +23,33 @@ define(function() {
 	};
 	
 	var targetX = 240;
-	var counter = 0;
-	Platform.prototype.checkPath = function() {
-		counter++;
+	Platform.prototype.checkPath = function () {
 		
-		if (((targetX - 100) < this.rect.x && (targetX + 100) > this.rect.x) ) {
+		if (((targetX - 75) > this.rect.x || (targetX + 75) < this.rect.x) ) {
 			
-			targetX = this.rect.x + 12;
-			
-			if (counter > 25) {
-				counter = 0;
-				return 3;
-			}
-			
+			targetX = this.rect.x + 48;
 			return 2;
 		}
+		
 		return 1;
 	};
 	
-	Platform.prototype.move = function(x, y) {
+	Platform.prototype.move = function(x, y, type) {
 		
 		this.rect.x = x;
 		this.rect.y = y;
 		this.rect.right = this.rect.x + this.rect.width;
 		
-		this.setType(this.checkPath());
+		if (type != 0)
+			this.setType(type);
+		else
+			this.setType(this.checkPath());
 		
 		this.el.css({ left: this.rect.x, top: this.rect.y });
 		
 	};
 	
-	Platform.prototype.getPoints = function() {
+	Platform.prototype.getPoints = function () {
 		
 		var retPoints = this.points;
 		
@@ -81,11 +77,11 @@ define(function() {
 		this.el.addClass('t' + this.type);
 	}
 	
-	Platform.prototype.removeClass = function() {
+	Platform.prototype.removeClass = function () {
 		this.el.removeClass('t1').removeClass('t2').removeClass('t3');
 	}
 	
-	Platform.prototype.onFrame = function() {};
+	Platform.prototype.onFrame = function () {};
 	
 	return Platform;
 });
