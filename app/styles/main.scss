@@ -107,6 +107,20 @@ html, body {
     
     div { margin-bottom: 5px; }
 }
+
+.sound {
+	background: url("../images/sound.png") no-repeat scroll 0 0 transparent;
+	cursor: pointer;
+	display: none;
+	height: 32px;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	width: 32px;
+	
+	&.mute { background-position: 0 -32px; }
+}
+
 .fires {
 	display: none;
 	height: 256px;

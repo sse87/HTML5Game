@@ -37,6 +37,11 @@ $(document).ready(function () {
 		
 	});
 	
+	$('.sound').click(function () {
+		game.toggleMute();
+		$(this).toggleClass('mute');
+	});
+	
 	$('.gameOverMenu .newName input').click(function () {
 		$('.gameOverMenu .newName input').select();
 	});

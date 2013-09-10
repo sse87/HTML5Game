@@ -11,7 +11,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 	 * @constructor
 	 */
 	var Game = function(el) {
-		this.version = '0.10.0';
+		this.version = '1.0.0';
 		
 		this.el = el;
 		this.player = new Player(this.el.find('.player'), this);
@@ -28,6 +28,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.fireY = 1000;
 		this.fireEl = this.worldEl.find('.fires');
 		
+		this.soundMute = false;
 		this.sound = new Howl({
 			urls: ['/sounds/jump.mp3', '/sounds/jump.ogg'],
 			sprite: {
@@ -40,6 +41,10 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		// Cache a bound onFrame since we need it each frame.
 		this.onFrame = this.onFrame.bind(this);
 	};
+	
+	Game.prototype.toggleMute = function () {
+		this.soundMute = !this.soundMute;
+	}
 	
 	Game.prototype.freezeGame = function () {
 		this.isPlaying = false;
@@ -252,6 +257,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.specialPlatformInterval = 25;
 		this.gameOverY = 800;
 		this.fireY = 1000;
+		this.fireSpeed = 1;
 		$('.fires').css('display', 'none');
 		// Create new platforms
 		this.createPlatforms();
@@ -261,6 +267,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.viewport = { x: 0, y: 0, width: 480, height: 800 };
 		
 		$('.score').fadeIn('slow');
+		$('.sound').fadeIn('slow');
 		this.unFreezeGame();
 	};
 	

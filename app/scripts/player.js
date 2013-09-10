@@ -29,7 +29,8 @@ define(['controls'], function(Controls) {
 		this.vel.y = -force;
 		
 		this.jumps++;
-		this.game.sound.play('jump');
+		if (!this.game.soundMute)
+			this.game.sound.play('jump');
 		$('.score .jumps span').html(this.jumps);
 	}
 	
