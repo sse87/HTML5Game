@@ -24,6 +24,15 @@ define(['controls'], function(Controls) {
 		this.jumps = 0;
 	};
 	
+	Player.prototype.jump = function(force) {
+		
+		this.vel.y = -force;
+		
+		this.jumps++;
+		this.game.sound.play('jump');
+		$('.score .jumps span').html(this.jumps);
+	}
+	
 	Player.prototype.onFrame = function(delta) {
 		
 		// Player input
@@ -37,9 +46,7 @@ define(['controls'], function(Controls) {
 		// ((Controls.keys.space && jumpEnabled) || autoJumpEnabled) && 
 		
 		if (this.vel.y === 0) {
-			this.vel.y = -JUMP_VELOCITY;
-			this.jumps++;
-			$('.score .jumps span').html(this.jumps);
+			this.jump(JUMP_VELOCITY);
 		}
 		
 		// Gravity
@@ -106,9 +113,7 @@ define(['controls'], function(Controls) {
 					that.pos.y = p.rect.y;
 					that.vel.y = 0;
 					if (p.type == 3)
-						that.vel.y = (-1 * JUMP_VELOCITY * 1.5);
-					
-					
+						that.jump(JUMP_VELOCITY * 1.5);
 					
 					// Collect platform points
 					if (p.points > 0) {

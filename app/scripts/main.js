@@ -22,6 +22,7 @@ $(document).ready(function () {
 	$('.startMenu .newGame').click(function () {
 		$('.startMenu').fadeOut('slow', function () { game.start(); });
 	});
+	$('.startMenu .newGame').click();
 	
 	$('.gameOverMenu .submitScore').click(function () {
 		

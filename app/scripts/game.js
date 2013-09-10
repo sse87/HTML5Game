@@ -28,6 +28,13 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		this.fireY = 1000;
 		this.fireEl = this.worldEl.find('.fires');
 		
+		this.sound = new Howl({
+			urls: ['/sounds/jump.mp3', '/sounds/jump.ogg'],
+			sprite: {
+				jump: [0,337]
+			}
+		});
+		
 		$('.version').html('v. ' + this.version);
 		
 		// Cache a bound onFrame since we need it each frame.
