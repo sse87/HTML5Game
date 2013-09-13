@@ -30,7 +30,7 @@ define(['player', 'platform', 'controls'], function(Player, Platform, Controls) 
 		
 		this.soundMute = false;
 		this.sound = new Howl({
-			urls: ['/sounds/jump.mp3', '/sounds/jump.ogg'],
+			urls: ['sounds/jump.mp3', 'sounds/jump.ogg'],
 			sprite: {
 				jump: [0,337]
 			}
